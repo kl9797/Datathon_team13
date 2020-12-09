@@ -1,15 +1,44 @@
-select
-  ie.icustay_id
-  , min(case when itemid = 211 then valuenum else null end) as HeartRate_Min
-  , max(case when itemid = 211 then valuenum else null end) as HeartRate_Max
-  -- , min(case when itemid in (615,618) then valuenum else null end) as RespRate_Min
-  -- , max(case when itemid in (615,618) then valuenum else null end) as RespRate_Max
-from icustays ie
--- join to the chartevents table to get the observations
-left join chartevents ce
-  -- match the tables on the patient identifier
-  on ie.icustay_id = ce.icustay_id
-  and ce.charttime >= ie.intime and ce.charttime <= ie.intime + interval '1' day
-  and ce.itemid = 211
-group by ie.icustay_id
-order by ie.icustay_id;
+CREATE TABLE team13.icd_1 (
+    subject_id INT4,
+    hadm_id INT4 NOT NULL,
+    icd_code BPCHAR(7) NOT NULL
+);
+
+INSERT INTO team13.icd_1
+SELECT subject_id, hadm_id, icd_code
+FROM mimic_hosp.diagnoses_icd 
+WHERE icd_code IN (
+    '5571', 
+ 	'5570', 
+	'5579', 
+	'78903', 
+	'78902', 
+	'78900', 
+	'78905', 
+	'78906', 
+	'78907', 
+	'78904', 
+	'78909', 
+	'78901', 
+	'R109', 
+	'R1084', 
+	'R1030', 
+	'R1010');
+
+DROP TABLE icd_2;
+
+CREATE TABLE team13.icd_2 (
+    subject_id INT4,
+    hadm_id INT4,
+    icd_code BPCHAR(7),
+    stay_id INT4,
+    intime TIMESTAMP,
+    outtime TIMESTAMP
+);
+
+INSERT INTO team13.icd_2
+SELECT team13.icd_1.subject_id, team13.icd_1.hadm_id, team13.icd_1.icd_code, mimic_icu.icustays.stay_id, mimic_icu.icustays.intime, mimic_icu.icustays.outtime
+FROM team13.icd_1
+RIGHT JOIN mimic_icu.icustays ON team13.icd_1.subject_id=mimic_icu.icustays.subject_id;
+
+select count(distinct icd_2.subject_id) from icd_2;
