@@ -61,10 +61,100 @@ LEFT JOIN `alien-works-293116.Datathon_AMI.risk_factors_1` risk
 ON ct.subject_id=risk.subject_id 
 and ct.hadm_id=risk.hadm_id;
 
-SELECT a.subject_id, a.hadm_id, a.admittime, a.deathtime, p.gender, p.dob, p.expire_flag
-FROM `physionet-data.mimiciii_clinical.admissions` a
-INNER JOIN `physionet-data.mimiciii_clinical.patients` p
+*-------------------------GI cohort------------------------------------------------------*
+*-------------------------GI demographic-------------------------------------------------*
+CREATE TABLE `alien-works-293116.Datathon_AMI.GI_demographic` (
+    subject_id INT64,
+    hadm_id INT64,
+    admittime DATETIME,
+    deathtime DATETIME,
+    ethnicity STRING,
+    gender STRING,
+    anchor_age INT64,
+    anchor_year INT64
+);
+
+INSERT INTO `alien-works-293116.Datathon_AMI.GI_demographic`
+SELECT a.subject_id, a.hadm_id, a.admittime, a.deathtime, a.ethnicity, p.gender, p.anchor_age, p.anchor_year
+FROM `physionet-data.mimic_core.admissions` a
+INNER JOIN `physionet-data.mimic_core.patients` p
 ON p.subject_id = a.subject_id;
+
+(n=524520)
+
+select d.*, c.* except(subject_id, hadm_id) from `alien-works-293116.Datathon_AMI.GI_demographic` d
+inner join `alien-works-293116.Datathon_AMI.GI_cohort` c
+ON c.subject_id=d.subject_id;
+
+(n=34002)
+
+*--------------------------------GI labtest-------------------------------------------------------------------*
+*--------------------------------search for itemid------------------------------------------------------------*
+select lab.* from `physionet-data.mimic_hosp.d_labitems` lab
+where 
+(label like '%Alanine Aminotransferase%'
+or
+label like '%Albumin%'
+or
+label like '%Alkaline Phosphatase%'
+or
+label like '%Anion Gap%'
+or
+label like '%Aspartate Aminotransferase%'
+or
+label like '%AST%'
+or
+label like '%Bicarbonate%'
+or
+label like '%Bilirubin%'
+or 
+label like '%Calcium%'
+or
+label like '%Chloride%'
+or
+label like '%Creatinine%'
+or
+label like '%Glucose%'
+or
+label like '%Magnesium%'
+or
+label like '%Phosphate%'
+or
+label like '%Potassium%'
+or
+label like '%Sodium%'
+or
+label like '%Urea Nitrogen%'
+or
+label like '%Basophils%'
+or
+label like '%Eosinophils%'
+or
+label like '%Hematocrit%'
+or
+label like '%Hemoglobin%'
+or
+label like '%INR%'
+or
+label like '%Lymphocytes%'
+or
+label like '%MCH%'
+or
+label like '%MCHC%'
+or
+label like '%MCV%'
+or
+label like '%Monocytes%'
+or
+label like '%Neutrophils%'
+or
+label like '%Platelet Count%'
+or
+label like '%PT%'
+or
+label like '%PTTe%'
+or
+label like '%RDW%');
 
 
 
