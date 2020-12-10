@@ -160,6 +160,8 @@ label like '%PTTe%'
 or
 label like '%RDW%');
 
+--save as lab_item_id
+
 select d.*, c.* except(itemid) from `alien-works-293116.Datathon_AMI.lab_item_id` d
 left join `physionet-data.mimic_hosp.labevents` c
 ON c.itemid=d.itemid
@@ -169,15 +171,21 @@ or value is NOT NULL);
 
 (n=76537132)
 
+--save as hosp_lab_test
+
 *----------------------------------merge lab_test and demographic in GI cohort--------------------------------------
 
 select d.* except(subject_id, hadm_id), c.* from `alien-works-293116.Datathon_AMI.hosp_lab_test` d
 inner join `alien-works-293116.Datathon_AMI.GI_cohort_demographic` c
 ON c.subject_id=d.subject_id and c.hadm_id = d.hadm_id;
 
+--save as GI_cohort_demographic_lab
+
 select d.*
 from `alien-works-293116.Datathon_AMI.GI_cohort_demographic_lab` d
 order by subject_id;
 
+--save as GI_cohort_2
 
+drop table `alien-works-293116.Datathon_AMI.GI_cohort_demographic_lab`
 
