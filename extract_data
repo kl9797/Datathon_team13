@@ -88,6 +88,10 @@ ON c.subject_id=d.subject_id;
 
 (n=34002)
 
+distinct subject_id in GI_cohort is 3573 / in GI_cohort_demographic is 3575 / in GI_cohort_demographic_lab is 3523
+non-distinct subject_id in GI_cohort is 4263 / in GI_cohort_demographic  is 34002 / in GI_cohort_demographic_lab is 4132283
+
+
 *--------------------------------GI labtest-------------------------------------------------------------------*
 *--------------------------------search for itemid------------------------------------------------------------*
 select lab.* from `physionet-data.mimic_hosp.d_labitems` lab
@@ -155,6 +159,25 @@ or
 label like '%PTTe%'
 or
 label like '%RDW%');
+
+select d.*, c.* except(itemid) from `alien-works-293116.Datathon_AMI.lab_item_id` d
+left join `physionet-data.mimic_hosp.labevents` c
+ON c.itemid=d.itemid
+where (ref_range_lower is NOT NULL
+or ref_range_upper is NOT NULL
+or value is NOT NULL);
+
+(n=76537132)
+
+*----------------------------------merge lab_test and demographic in GI cohort--------------------------------------
+
+select d.* except(subject_id, hadm_id), c.* from `alien-works-293116.Datathon_AMI.hosp_lab_test` d
+inner join `alien-works-293116.Datathon_AMI.GI_cohort_demographic` c
+ON c.subject_id=d.subject_id and c.hadm_id = d.hadm_id;
+
+select d.*
+from `alien-works-293116.Datathon_AMI.GI_cohort_demographic_lab` d
+order by subject_id;
 
 
 
