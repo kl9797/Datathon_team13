@@ -42,3 +42,29 @@ FROM team13.icd_1
 RIGHT JOIN mimic_icu.icustays ON team13.icd_1.subject_id=mimic_icu.icustays.subject_id;
 
 select count(distinct icd_2.subject_id) from icd_2;
+
+DROP TABLE icd_3;
+
+CREATE TABLE team13.icd_3 (
+    subject_id INT4,
+    hadm_id INT4,
+    icd_code BPCHAR(7)
+);
+
+INSERT INTO team13.icd_3
+SELECT subject_id, hadm_id, icd_code
+FROM mimic_hosp.diagnoses_icd 
+WHERE icd_code IN ('443', '4439', '4589', '458', 'I95', '99591', 'A40', 'A41', 'I256', '42731', '42732', '42761', '42490', '42491', '42499', 'I38', 'I39', '4254', 'I428', 'I253', '3970', 'I10989', '5859', 'N189', 'I2724', '28981', '28982', 'D6869', 'D6859');
+
+select * from `alien-works-293116.Datathon_AMI.AMI_cohort` ct
+LEFT JOIN `alien-works-293116.Datathon_AMI.risk_factors_1` risk
+ON ct.subject_id=risk.subject_id 
+and ct.hadm_id=risk.hadm_id;
+
+SELECT a.subject_id, a.hadm_id, a.admittime, a.deathtime, p.gender, p.dob, p.expire_flag
+FROM `physionet-data.mimiciii_clinical.admissions` a
+INNER JOIN `physionet-data.mimiciii_clinical.patients` p
+ON p.subject_id = a.subject_id;
+
+
+
