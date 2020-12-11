@@ -189,3 +189,25 @@ order by subject_id;
 
 drop table `alien-works-293116.Datathon_AMI.GI_cohort_demographic_lab`
 
+*----------------------------------------Vital signal-------------------------------------------------------------------
+
+select lab.* from `physionet-data.mimic_icu.chartevents` lab
+where (CAST(lab.itemid AS string) LIKE '220047%'
+or
+CAST(lab.itemid AS string) LIKE '220045%'
+or 
+CAST(lab.itemid AS string) LIKE '224166%'
+or 
+CAST(lab.itemid AS string) LIKE '228872%'
+);
+
+--save as vital_signal
+
+select d.* except(subject_id, hadm_id, warning, stay_id, storetime), c.* from `alien-works-293116.Datathon_AMI.vital_signal` d
+inner join `alien-works-293116.Datathon_AMI.GI_cohort_2` c
+ON c.subject_id=d.subject_id and c.hadm_id = d.hadm_id;
+
+select d.subject_id, d.hadm_id, d.admittime, d.deathtime, d.gender, d.anchor_age, d.icd_code, d.itemid_1, d.label, d.charttime_1, d.valuenum_1, d.valueuom_1, d.ref_range_lower, d.ref_range_upper, d.charttime, d.itemid, d.valuenum, d.valueuom, d.warning  from `alien-works-293116.Datathon_AMI.1` d
+order by subject_id;
+
+select count(distinct d.subject_id) from `alien-works-293116.Datathon_AMI.GI_cohort_lab_demo` d
