@@ -601,3 +601,92 @@ AND p.patientunitstayid IN(
 )
 
 N5 = 3805
+        
+SELECT 
+p.*,
+d.ihd,
+d.diabetes,
+d.hypertension,
+d.ckd,
+d.malignancy,
+sf.sofa,
+l.HEMATOCRIT_max,
+l.HEMATOCRIT_min,
+l.HEMOGLOBIN_min,
+l.HEMOGLOBIN_max,
+l.PLATELET_min,
+l.PLATELET_max,
+l.WBC_min,
+l.WBC_max,
+l.ANIONGAP_min,
+l.ANIONGAP_max,
+l.BICARBONATE_min,
+l.BICARBONATE_max,
+l.BUN_min,
+l.BUN_max,
+l.CALCIUM_min,
+l.CALCIUM_max,
+l.CHLORIDE_min,
+l.CHLORIDE_max,
+l.CREATININE_min,
+l.CREATININE_max,
+l.SODIUM_min,
+l.SODIUM_max,
+l.POTASSIUM_min,
+l.POTASSIUM_max,
+l.INR_min,
+l.INR_max,
+l.PT_min,
+l.PT_max,
+l.PTT_min,
+l.PTT_max,
+l.GLUCOSE_min,
+l.GLUCOSE_max,
+l.LACTATE_min,
+l.LACTATE_max,
+v.heart_rate_min,
+v.heart_rate_max,
+v.heart_rate_mean,
+v.sbp_min,
+v.sbp_max,
+v.sbp_mean,
+v.dbp_min,
+v.dbp_max,
+v.dbp_mean,
+v.mbp_min,
+v.mbp_max,
+v.mbp_mean,
+v.resp_rate_min,
+v.resp_rate_max,
+v.resp_rate_mean,
+v.temperature_min,
+v.temperature_max,
+v.temperature_mean,
+v.spo2_min,
+v.spo2_max,
+v.spo2_mean,
+vaso.vasopressor_flag,
+t.transfusion_flag,
+e.endoscopy,
+e.angiography,
+pt.ppi,
+ppt.apachescore
+FROM `alien-works-293116.Datathon_AMI.eicu_GI_3` p
+LEFT JOIN `alien-works-293116.Datathon_AMI.eicu_diagnosis` d
+    ON p.patientunitstayid=d.patientunitstayid
+LEFT JOIN `alien-works-293116.Datathon_AMI.mp_sofa` sf
+    ON p.patientunitstayid=sf.patientunitstayid
+LEFT JOIN `alien-works-293116.Datathon_AMI.eicu_GI_labtest` l
+    ON p.patientunitstayid=l.patientunitstayid
+LEFT JOIN `alien-works-293116.Datathon_AMI.eicu_GI_vitalsign` v 
+    ON p.patientunitstayid=v.patientunitstayid
+LEFT JOIN `alien-works-293116.Datathon_AMI.eicu_vasopressor` vaso
+    ON p.patientunitstayid=vaso.patientunitstayid
+LEFT JOIN `alien-works-293116.Datathon_AMI.eicu_rcb` t
+    ON p.patientunitstayid=t.patientunitstayid
+LEFT JOIN `alien-works-293116.Datathon_AMI.eicu_endoscopy` e
+    ON p.patientunitstayid=e.patientunitstayid
+LEFT JOIN `alien-works-293116.Datathon_AMI.eicu_ppi` pt
+    ON p.patientunitstayid=pt.patientunitstayid
+LEFT JOIN `physionet-data.eicu_crd.apachepatientresult` ppt
+    ON p.patientunitstayid=ppt.patientunitstayid
